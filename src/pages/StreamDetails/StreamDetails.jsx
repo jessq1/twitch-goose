@@ -73,7 +73,7 @@ class StreamDetails extends Component {
               <Grid container spacing={3}>
         <Grid item md={6} lg={4} mx={'auto'} >
 {/* placeholder review card need to change {review} into actual review element*/}
-{/* <ReviewCard review={this.props.userProfile}/> */}
+<ReviewCard review={this.props.userProfile}/>
 <StarRating
               api_id={searchResult.id}
               handleAddReview={this.handleAddReview}

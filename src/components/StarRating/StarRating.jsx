@@ -44,7 +44,7 @@ export default function StartRating(props) {
   const handleSubmit = e => {
 		e.preventDefault();
     console.log(formData)
-    // this.props.handleAddReview(formData)
+    // props.handleAddReview(formData)
   };
 
   return (
