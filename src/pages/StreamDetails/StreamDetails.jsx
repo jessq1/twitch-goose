@@ -4,6 +4,7 @@ import {Box, Grid, Typography, Divider,Chip } from '@material-ui/core';
 import MyProfileBar from '../../components/MyProfileBar/MyProfileBar'
 import LiveBadge from '../../components/BadgeAvatar/LiveBadge';
 import ReviewCard from '../../components/ReviewCard/ReviewCard';
+import StarRating from '../../components/StarRating/StarRating';
 
 class StreamDetails extends Component {
   state = {
@@ -72,7 +73,13 @@ class StreamDetails extends Component {
               <Grid container spacing={3}>
         <Grid item md={6} lg={4} mx={'auto'} >
 {/* placeholder review card need to change {review} into actual review element*/}
-<ReviewCard review={this.props.userProfile}/>
+{/* <ReviewCard review={this.props.userProfile}/> */}
+<StarRating
+              api_id={searchResult.id}
+              handleAddReview={this.handleAddReview}
+              userProfile={this.props.userProfile}
+              media_id={searchResult._id}
+            />
         </Grid>
         </Grid>
       </Box>

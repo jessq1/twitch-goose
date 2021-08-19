@@ -1,7 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
+import {Box, Button} from '@material-ui/core';
+import { useEffect, useState, useRef } from 'react';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const labels = {
   0.5: 'Useless',
@@ -24,25 +26,45 @@ const useStyles = makeStyles({
   },
 });
 
-export default function HoverRating() {
-  const [value, setValue] = React.useState(2);
-  const [hover, setHover] = React.useState(-1);
+export default function StartRating(props) {
+  const [value, setValue] = useState(0);
+  const [hover, setHover] = useState(-1);
+  const [formData, setFormData] = useState({
+    rating:'',
+  })
   const classes = useStyles();
+
+  const formRef = React.createRef();
+
+	const handleChange = e => {
+		setFormData({ ...formData, [e.target.name]: e.target.value })
+    setValue(e.target.value)
+	};
+
+  const handleSubmit = e => {
+		e.preventDefault();
+    console.log(formData)
+    // this.props.handleAddReview(formData)
+  };
 
   return (
     <div className={classes.root}>
+      <form ref={formRef} onSubmit={handleSubmit}>
       <Rating
-        name="hover-feedback"
+        autoComplete="off"
+        name="rating"
         value={value}
+        content={labels[value]}
         precision={0.5}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-        onChangeActive={(event, newHover) => {
+        onChangeActive={(handleChange, newHover) => {
           setHover(newHover);
         }}
+        onChange={handleChange}
+        auto
       />
       {value !== null && <Box ml={2}>{labels[hover !== -1 ? hover : value]}</Box>}
+      <Button size="small" variant="contained" color="secondary" startIcon={<AddCircleIcon />} type='submit' >Review</Button>
+      </form>
     </div>
   );
 }
