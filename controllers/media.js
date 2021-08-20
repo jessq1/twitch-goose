@@ -4,6 +4,7 @@ import {Review} from '../models/review.js'
 
 
 import api from '../config/api.js'
+import { json } from 'express'
 
 export {
   topGames,
@@ -99,19 +100,26 @@ function searchOneGame(req, res) {
 function searchOneStream(req, res) {
   api.get(`https://api.twitch.tv/helix/search/channels?query=${req.params.query}`)
     .then(response =>{
+      response = response.data.data.filter(x=>x.broadcaster_login===req.params.query)
+      response = response[0]
       Media.findOne({api_id : response.id})
       .then(media=>{
-        Review.find({media: media.id})
+        if(media){
+        Review.find({media: media._id})
         .populate('author')
         .populate('media')
         .then(reviews=>{
-          response.data.reviews = reviews
-          response.data.id = media.id ? media.id : ""
-          res.json(response.data)
-          console.log(response.data)
+          response.reviews = reviews
+          response._id = media._id ? media._id : ""
+          res.json(response)
+          console.log(response)
         })
+      }else{
+        res.json(response)
+      }
       })
     })
+
 }
 
 function searchStreams(req, res){
@@ -128,3 +136,6 @@ function searchRandomStreams(req, res){
     })
 }
 
+function getStream(req, res){
+  searchOneStream(req.params.query).filter(x=>x.broadcaster_login === req.params.query)
+}

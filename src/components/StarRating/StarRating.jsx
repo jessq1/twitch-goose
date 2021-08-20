@@ -31,8 +31,9 @@ export default function StartRating(props) {
   const [hover, setHover] = useState(-1);
   const [formData, setFormData] = useState({
     api_id: props.api,
-    author: props?.userProfile,
+    author: props.userProfile,
     rating:'',
+    media: props.media
   })
   const classes = useStyles();
 

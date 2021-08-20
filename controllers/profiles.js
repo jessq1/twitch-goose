@@ -1,6 +1,5 @@
 import { Profile } from "../models/profile.js"
 import { Media } from '../models/media.js'
-import { Streamer } from '../models/streamer.js'
 
 export {
   userProfile,

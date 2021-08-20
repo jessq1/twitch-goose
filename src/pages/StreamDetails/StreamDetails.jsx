@@ -16,21 +16,20 @@ class StreamDetails extends Component {
 
   async componentDidMount() {
     const { params } = this.props.match
-    let searchResult = await mediaAPI.searchOneStream(params.query)
-    let streamReviews = await reviewAPI.showStreamReviews(this.props.match.params.id)
-    searchResult= searchResult.data.filter(data => data.broadcaster_login === params.query)
-    this.setState({searchResult : searchResult[0], reviews:streamReviews})
+    const streamReviews = await reviewAPI.showStreamReviews(this.props.match.params.id)
+    let searchResult = await mediaAPI.searchOneStream(params.query, params.id)
+    this.setState({searchResult, reviews: streamReviews})
   }
 
   
   handleAddReview = async review => {
-    const newReview = await reviewsAPI.addReview(review)
-    let streamReviews = await reviewAPI.showStreamReviews(this.props.match.params.id)
-    const searchResult = this.state.searchResult
-    searchResult.reviews = []
-    searchResult.reviews.push(newReview)
-    this.setState({ searchResult: searchResult, reviews:streamReviews })
-  }
+      const newReview = await reviewsAPI.addReview(review)
+      const streamReviews = await reviewAPI.showStreamReviews(this.props.match.params.id)
+      const searchResult = this.state.searchResult
+      searchResult.reviews.push(newReview)
+      this.setState({ searchResult, reviews:streamReviews })
+    }
+  
 
   
   handleDeleteReview = async id => {
@@ -38,12 +37,12 @@ class StreamDetails extends Component {
     const reviewIdx = this.state.searchResult.reviews.findIndex(review => review._id === deletedReview._id)
     const searchResult = this.state.searchResult
     searchResult.reviews.splice(reviewIdx, 1)
-    this.setState({ searchResult })
+    this.setState({ searchResult})
   }
 
 
   render() {
-    const { searchResult } = this.state
+    const { searchResult, reviews } = this.state
     return (
       <>
       <MyProfileBar userProfile={this.props.userProfile} style={{display: 'flex'}}/>
@@ -92,27 +91,36 @@ class StreamDetails extends Component {
               <Divider/>
               </Box>
               <Box m={1}>
-              <Typography variant={'h5'}>Add a Review</Typography>
+
+              <Typography variant={'h5'}>Reviews</Typography>
+          <Grid container spacing={3}>
+          {reviews?.map(review=> 
+          <Grid item xs={12} s={12} md={6} lg={3} mx={'auto'} >
+            <ReviewCard
+              userProfile={this.props.userProfile}
+              review={review}
+              handleDeleteReview={this.handleDeleteReview}
+              />
+       
+              </Grid>
+              )}
+        { !reviews?.some(review => review.author._id === this.props.userProfile._id) &&
+          this.props.userProfile?.media.some(media => media._id === searchResult?._id) &&
+          <>
+            <StarRating
+              api={this.props.match.params.id}
+              media={searchResult._id}
+              userProfile={this.props?.userProfile?._id}
+              handleAddReview={this.handleAddReview}
+            />
+            
+          </>
+        }
+        
           <>
              
-        <StarRating
-          api={this.props.match.params.id}
-          userProfile={this.props?.userProfile?._id}
-          handleAddReview={this.handleAddReview}
-        />
           </>
-          <Box my={2}>
-              <Divider/>
-              </Box>
-           </Box>
-           <Box m={2}>
-          <Typography variant={'h5'}>Reviews</Typography>
-          <Grid container spacing={3}>
-          {this.state.reviews?.map(review=>
-          <Grid item xs={12} s={12} md={6} lg={3} mx={'auto'} >
-          <ReviewCard review={review}/>
-        </Grid>
-          )}
+                   
 </Grid>
 
 </Box>

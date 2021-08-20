@@ -2,10 +2,15 @@ import React from 'react'
 import ShowStarRating from '../../components/StarRating/ShowStarRating'
 import BadgeAvatar from '../BadgeAvatar/BadgeAvatar';
 import LetterBadgeAvatar from '../BadgeAvatar/LetterBadgeAvatar';
-import { Card, Box, Typography } from '@material-ui/core';
+import {Button, Card, Box, Typography } from '@material-ui/core';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
-const ReviewCard = ({ review }) => {
 
+const ReviewCard = ({ review, handleDeleteReview }) => {
+    const handleSubmit = e => {
+	    e.preventDefault();
+        handleDeleteReview(review._id)
+  };
     return (
         <>
         <Card  >
@@ -14,6 +19,11 @@ const ReviewCard = ({ review }) => {
         <LetterBadgeAvatar live={true} name={review?.author?.name}/>
         <Typography>Author: {review?.author?.name}</Typography>
         <ShowStarRating rating={review?.rating}/>
+        <form onSubmit={handleSubmit}>
+        <Box ml={3} mb={1}>
+      <Button size="small" variant="contained" color="secondary" startIcon={<AddCircleIcon />} type='submit' >Delete</Button>
+        </Box>
+        </form>
         {/* <Typography>Date: {review?.createdAt}</Typography> */}
 
 
